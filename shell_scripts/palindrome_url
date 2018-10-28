@@ -1,9 +1,17 @@
 #!/usr/bin/node
 
 let request = require('request');
-request('http://www.google.com', function (error, response, body) {
-  console.log('error:', error); // Print the error if one occurred
-  // Print the response status code if a response was received
-  console.log('statusCode:', response && response.statusCode);
-  console.log('body:', body); // Print the HTML for the Google homepage.
+let Phrase = require("caragpe-palindrome");
+
+let url = 'https://cdn.learnenough.com/phrases.txt'
+
+request(url, function(error, response, body) {
+  let lines = body.split('\n')
+  let palindromes = lines.filter( line => {
+    phrase = new Phrase(line)
+    return phrase.palindrome() === true
+  })
+  palindromes.forEach(function(palindrome) {
+    console.log("palindrome detected:", palindrome);
+  });
 });
