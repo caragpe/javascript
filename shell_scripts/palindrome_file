@@ -1,0 +1,21 @@
+#!/usr/bin/node
+
+let fs = require('fs')
+
+let text = fs.readFileSync('./phrases.txt','utf-8')
+let Phrase = require("caragpe-palindrome");
+
+text.split('\n').forEach(function(line) {
+  let phrase = new Phrase(line);
+  if(phrase.palindrome()) {
+    console.log("palindrome detected: ", line)
+    appendDataTo('./detected_palindrome.txt', line)
+  } 
+})
+
+function appendDataTo(file, data) {
+  fs.appendFile(file,`${data}\n`, (err) => {
+    if (err) throw err;
+    console.log(`The ${data} was appended to ${file}\n`);
+  });
+}
