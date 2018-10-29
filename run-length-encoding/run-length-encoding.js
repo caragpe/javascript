@@ -1,52 +1,69 @@
 export function encode(string) {
-  let current = '';
-  let previous = '';
-  let acc = 1;
-  let encodedString = '';
-  Array.from(string).forEach(function(element) {
-    if(current === '') {
-      current = element;
-    } else {
-      previous = current;
-      current = element;
-      if (current === previous) {
-        acc++;
-      } else {
-        if (acc === 1) { 
-          encodedString += `${previous}`; 
-        } else { 
-          encodedString += `${acc}${previous}`;
-          acc = 1;
-        }
-      }
-    }
-  });
-  if (acc === 1) { 
-    encodedString += `${current}`; 
-  } else { 
-    encodedString += `${acc}${current}`;
-  }
-  return encodedString;
-} 
-
-export function decode(string) {
-  let decoded = '';
-  if (string === '') return ''; 
-  let group = string.split(/(\d{1,}(\s+|[a-z]{1}))/i);
-  group.forEach(function(element) {
-    if(!element.match(/\s/g)) {
-    let times = parseInt(element.match(/\d*/)[0]) || 1;
-    let letter = element.match(/[a-zA-Z\s]+/i)[0]
-    decoded += repeat(times, letter);
-    }
-  })
-  return decoded;
+  if (string === '') {
+    return '';
+  } else {
+    let stringArray = Array.from(string);
+    return transverseArrayOfEquals(stringArray)
+  };
 }
 
-function repeat(number, character) {
-  let result = '';
-  for(let i=0;i<number;i++) {
-    result += character;
+function countCharacterOccurrencesOf(character, array) {
+  let occurrences = array.filter(function(element) {
+    return element === character
+  }).length
+  if (occurrences > 1) {
+    return occurrences;
+  } else {
+    return '';
   }
-  return result;
+}
+
+function transverseArrayOfEquals(array) {
+  let encoded = '';
+  let start = 0;
+  let end = 0;
+  let previous = array[0];
+  array.map(function(element) {
+    if( element === previous) {
+      end +=1;
+    } else {
+      let count = countCharacterOccurrencesOf(previous,array.slice(start, end));
+      encoded += count + previous;
+      previous = element;
+      start = end;
+      end += 1; 
+    };
+  });
+  let count = countCharacterOccurrencesOf(previous,array.slice(start));
+  encoded += count + previous;
+  
+  return encoded;
+}
+
+export function decode(string) {
+  if (string === '') {
+    return '';
+  } else {
+    let decoded = ''
+    let stringArray = Array.from(string);
+    let count = [];
+  
+    stringArray.map( function(element) {
+      if (element.match(/([a-zA-Z]|\s)/)) {
+        decoded += charTimes(element, Number(count.join('')));
+        count = [];
+      } else {
+        count.push(Number(element)) 
+      }
+    });
+    return decoded;
+  }
+}
+
+function charTimes(char, times) {
+  if (times > 1) {
+    return char + charTimes(char, times -1)
+  } else {
+    return char
+  }
 }
