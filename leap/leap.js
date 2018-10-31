@@ -3,8 +3,5 @@ export function isLeap(year) {
   let divisibleBy100 = year%10 === 0;
   let divisibleBy400 = year%400 === 0;
   
-  if (divisibleBy400) return true;
-  if (divisibleBy4 && !divisibleBy100) return true;
-
-  return false;
+  return divisibleBy400 || (divisibleBy4 && !divisibleBy100)
 }
