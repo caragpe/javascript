@@ -1,3 +1,4 @@
-*/package-lock.json
-*/node_modules/
-*/.exercism/
+**/node_modules/*
+**/package-lock.json
+**/.exercism/
+**/*.txt
